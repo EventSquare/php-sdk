@@ -1,0 +1,12 @@
+{
+    "name": "eventsquare/php-sdk",
+    "description": "The EventSquare SDK for PHP provides a native interface to the EventSquare API.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Willem Staels",
+            "email": "willem@eventsquare.co"
+        }
+    ],
+    "require": {}
+}
