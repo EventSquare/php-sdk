@@ -1,6 +1,6 @@
 <?php
 
-namespace EventSquareSDK;
+namespace EventSquare;
 
 class EventSquare
 {
