@@ -8,5 +8,10 @@
             "email": "willem@eventsquare.co"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "EventSquare\\": "src/"
+        }
+    },
     "require": {}
 }
