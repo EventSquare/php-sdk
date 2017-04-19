@@ -7,14 +7,21 @@ use EventSquare\EventSquareException;
 class EventSquare
 {
     private $headers = [];
+    private $meta = [];
     private $endpoint = 'http://api.eventsquare.co/1.0';
+
+    private $preview_token;
 
     private $queueid;
     private $cartid;
 
     private $timezone;
     private $language = null;
-    private $store;
+
+    public $event;
+    public $edition;
+    public $channel;
+
     private $expires_at;
 
     /**
@@ -24,7 +31,18 @@ class EventSquare
     {
         $eventsquare = new EventSquare;
         $eventsquare->checkDependencies();
+
         $eventsquare->headers['apikey'] = $apikey;
+
+        $eventsquare->meta = [
+            'agent' => $_SERVER['HTTP_USER_AGENT'],
+            'ip' => $_SERVER['REMOTE_ADDR'],
+        ];
+
+        if(!empty($_SERVER['HTTP_REFERER'])){
+            $eventsquare->meta['referer'] = $_SERVER['HTTP_REFERER'];
+        }
+
         return $eventsquare;
     }
 
@@ -63,6 +81,14 @@ class EventSquare
     }
 
     /**
+    * Get language;
+    */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
     * Set language;
     */
     public function setLanguage($language)
@@ -72,33 +98,77 @@ class EventSquare
     }
 
     /**
+    * Get default language;
+    */
+    public function getDefaultLanguage()
+    {
+        return $this->event->languages[0];
+    }
+
+    /**
+    * Set default language;
+    */
+    public function setDefaultLanguage()
+    {
+        $this->language = $this->getDefaultLanguage();
+        return $this;
+    }
+
+    /**
+    * See if currently set language is active in the event
+    */
+    public function acceptsActiveLanguage()
+    {
+        return in_array($this->language,$this->event->languages);
+    }
+
+    /**
+    * Set event;
+    */
+    public function setEvent($event)
+    {
+        $parameters = [
+            'language' => $this->language,
+        ];
+
+        $parameters = array_merge($this->meta,$parameters);
+
+        $event = $this->get('/store/'.$event,$parameters)->body;
+        $this->event = $event->event;
+
+        return $this;
+    }
+
+    /**
     * Set store;
     */
-    public function setStore($event,$edition=null,$channel=null,$lang=null)
+    public function setEdition($event,$edition,$channel,$preview_token = null)
     {
 
-        $uri = $event;
-        if($edition) {
-            $uri .= '/' . $edition;
-        }
+        $uri = $event.'/'.$edition;
+
         if($channel) {
             $uri .= '/' . $channel;
         }
 
         $parameters = [
-            'agent' => $_SERVER['HTTP_USER_AGENT'],
-            'ip' => $_SERVER['REMOTE_ADDR'],
             'cart' => $this->getCartId(),
             'queue' => $this->getQueueId(),
-            'referer' => null,
             'language' => $this->language,
+            'preview_token' => $preview_token,
         ];
 
-        if(!empty($_SERVER['HTTP_REFERER'])){
-            $parameters['referer'] = $_SERVER['HTTP_REFERER'];
+        $this->preview_token = $preview_token;
+
+        $parameters = array_merge($this->meta,$parameters);
+
+        $edition = $this->get('/store/'.$uri,$parameters)->body;
+        $this->edition = $edition->edition;
+
+        if($channel) {
+            $this->channel = $this->edition->channel;
         }
 
-        $this->store = $this->get('/store/'.$uri,$parameters)->body;
         $this->updateQueueId();
         $this->updateCartId();
         return $this;
@@ -107,18 +177,75 @@ class EventSquare
     /**
     * Get store;
     */
-    public function getStore()
+    public function getUri($segments=null)
     {
-        return $this->store;
+        $link = '';
+
+        if(!empty($segments['language'])){
+            $link .= '/' . $segments['language'];
+        }
+        if(!empty($segments['edition'])){
+            $link .= '/' . $segments['edition'];
+        }
+        if(!empty($segments['channel'])){
+            $link .= '/' . $segments['channel'];
+        }
+        if(!empty($segments['preview_token'])){
+            $link .= '/?token=' . $segments['preview_token'];
+        }
+
+        if(!$segments){
+
+            if($this->edition) {
+                $link .= '/' . $this->edition->uri;
+            }
+            if($this->channel) {
+                $link .= '/' . $this->channel->uri;
+            }
+            if($this->preview_token) {
+                $link .= '/?token=' . $this->preview_token;
+            }
+
+        }
+
+        return ltrim($link, '/');
     }
 
     /**
-    * Has store;
+    * Get event;
     */
-    public function hasStore()
+    public function getEvent()
     {
-        if($this->store) return true;
+        return !empty($this->event) ? $this->event : null;
+    }
+
+    /**
+    * Check if edition
+    */
+    public function isEdition()
+    {
+        if($this->hasStore() && !empty($this->getStore()->edition)) return true;
         return false;
+    }
+
+    /**
+    * Get edition;
+    */
+    public function getEdition($uid=null)
+    {
+        return !empty($this->store->edition) ? $this->store->edition : null;
+    }
+
+    /**
+    * Get edition;
+    */
+    public function getEditions()
+    {
+        if(!empty($this->getEvent()->editions)){
+            return $this->getEvent()->editions;
+        } else {
+            return [];
+        }
     }
 
     /**
@@ -126,15 +253,7 @@ class EventSquare
     */
     public function isClosed()
     {
-        return false;
-    }
-
-    /**
-    * Check if this store requires a password
-    */
-    public function isLocked()
-    {
-        return false;
+        return is_null($this->edition);
     }
 
     /**
@@ -142,7 +261,7 @@ class EventSquare
     */
     public function isQueue()
     {
-        if($this->hasStore() && !empty($this->getStore()->edition->queue)) return true;
+        if(!empty($this->edition->queue)) return true;
         return false;
     }
 
@@ -168,9 +287,9 @@ class EventSquare
     */
     public function updateQueueId()
     {
-        if(!empty($this->store->edition->queue->queueid))
+        if(!empty($this->edition->queue->queueid))
         {
-            $this->queueid = $this->store->edition->queue->queueid;
+            $this->queueid = $this->edition->queue->queueid;
         }
         return $this;
     }
@@ -180,7 +299,7 @@ class EventSquare
     */
     public function isCart()
     {
-        if($this->hasStore() && !empty($this->getStore()->edition->cart)) return true;
+        if(!empty($this->edition->cart)) return true;
         return false;
     }
 
@@ -206,19 +325,11 @@ class EventSquare
     */
     public function updateCartId()
     {
-        if(!empty($this->store->edition->cart->cartid))
+        if(!empty($this->edition->cart->cartid))
         {
-            $this->cartid = $this->store->edition->cart->cartid;
+            $this->cartid = $this->edition->cart->cartid;
         }
         return $this;
-    }
-
-    /**
-    * Get edition;
-    */
-    public function getEdition($uid=null)
-    {
-        return !empty($this->store->edition) ? $this->store->edition : null;
     }
 
     /**
@@ -281,6 +392,7 @@ class EventSquare
         $response = curl_exec($curl);
         $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 
+
         // Service unavailable
         $code = curl_getinfo($curl,CURLINFO_HTTP_CODE) > 0 ? curl_getinfo($curl,CURLINFO_HTTP_CODE) : 503;
         $body = substr($response, $header_size);
@@ -297,9 +409,8 @@ class EventSquare
         }
 
         if($code != 200) {
-            throw new \Exception('A problem occured when trying to connect to the API',500);
+            throw new \Exception('A problem occured when trying to connect to the API',$code);
         }
-
         return (object) [
             'code' => $code,
             'body' => $body,
