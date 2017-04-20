@@ -181,6 +181,10 @@ class EventSquare
     {
         $link = '';
 
+        if(!empty($segments['domain']) && !empty($segments['event'])){
+            $link = $segments['event'] . '.' . $segments['domain'];
+        }
+
         if(!empty($segments['language'])){
             $link .= '/' . $segments['language'];
         }
