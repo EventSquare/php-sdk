@@ -8,7 +8,7 @@ class EventSquare
 {
     private $headers = [];
     private $meta = [];
-    private $endpoint = 'http://api.eventsquare.co/1.0';
+    private $endpoint = "http://api.eventsquare.co/1.0";
 
     private $preview_token;
 
@@ -336,13 +336,49 @@ class EventSquare
         return $this;
     }
 
+    // /**
+    // * Get cart expiration time;
+    // */
+    // public function getCart()
+    // {
+    //     return !empty($this->store->edition->cart) ? $this->store->edition->cart : null;
+    // }
+
     /**
-    * Get cart expiration time;
+    * Get cart
     */
     public function getCart()
     {
-        return !empty($this->store->edition->cart) ? $this->store->edition->cart : null;
+        $parameters = [
+            //
+        ];
+
+        $parameters = array_merge($this->meta,$parameters);
+
+        $response = $this->get('/cart/'.$this->getCartId(),$parameters)->body;
+        $this->cart = $response->cart;
+
+        return $this->cart;
     }
+
+    /**
+    * Update cart type
+    */
+    public function modifyCartType($uid,$quantity)
+    {
+        $parameters = [
+            'quantity' => $quantity
+        ];
+        $parameters = array_merge($this->meta,$parameters);
+        $this->put('/cart/'.$this->getCartId().'/types/'.$uid,$parameters)->body;
+
+        return;
+    }
+
+    //return app('store')->getCartId();
+    //Route::put(version().‘/cart/{cart}/types/{tuid}‘, ‘CartController@modifyType’);
+    //quantity
+    //timeslot
 
     /**
     * Methods
