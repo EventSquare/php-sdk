@@ -323,7 +323,7 @@ class EventSquare
         $this->cartid = $cartid;
         return $this;
     }
-
+    
     /**
     * Update cartid
     */
