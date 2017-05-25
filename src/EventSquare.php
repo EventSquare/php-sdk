@@ -323,7 +323,7 @@ class EventSquare
         $this->cartid = $cartid;
         return $this;
     }
-    
+
     /**
     * Update cartid
     */
@@ -353,7 +353,7 @@ class EventSquare
     public function getCart()
     {
         $parameters = [
-            //
+            'language' => $this->language
         ];
 
         $parameters = array_merge($this->meta,$parameters);
@@ -377,11 +377,6 @@ class EventSquare
 
         return;
     }
-
-    //return app('store')->getCartId();
-    //Route::put(version().‘/cart/{cart}/types/{tuid}‘, ‘CartController@modifyType’);
-    //quantity
-    //timeslot
 
     /**
     * Methods
