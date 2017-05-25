@@ -332,17 +332,20 @@ class EventSquare
         if(!empty($this->edition->cart->cartid))
         {
             $this->cartid = $this->edition->cart->cartid;
+            $this->getCart();
         }
         return $this;
     }
 
-    // /**
-    // * Get cart expiration time;
-    // */
-    // public function getCart()
-    // {
-    //     return !empty($this->store->edition->cart) ? $this->store->edition->cart : null;
-    // }
+    /**
+    * Check if the current cart is pending
+    */
+    public function isPending()
+    {
+        if(!empty($this->cart) && !empty($this->cart->pending)) return true;
+        return false;
+    }
+
 
     /**
     * Get cart
