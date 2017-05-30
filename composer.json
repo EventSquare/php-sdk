@@ -1,0 +1,19 @@
+{
+    "name": "eventsquare/php-sdk",
+    "description": "The EventSquare SDK for PHP provides a native interface to the EventSquare API.",
+    "type": "library",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Willem Staels",
+            "email": "willem.staels@eventsquare.co"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "EventSquare\\": "src/"
+        }
+    },
+    "require": {
+    }
+}
