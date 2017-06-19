@@ -31,7 +31,7 @@ class Connection {
 
     }
 
-    public function send($uri,$target,$instance) {
+    public function send($uri,$target = null,$instance = null) {
         $this->uri = $uri;
         $this->target = $target;
         $this->instance = $instance;

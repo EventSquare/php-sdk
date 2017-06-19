@@ -8,7 +8,6 @@ use EventSquare\Connection;
 class Pocket {
 
     private $connection;
-    private $request;
     private $data;
 
     public function __construct(Connection $connection, $uid) {
