@@ -27,31 +27,6 @@ class EventSquare
     }
 
     /**
-    * Get timezone;
-    */
-    public function getTimezone()
-    {
-        return $this->timezone;
-    }
-
-    /**
-    * Get default language;
-    */
-    public function getDefaultLanguage()
-    {
-        return $this->event->languages[0];
-    }
-
-    /**
-    * Set default language;
-    */
-    public function setDefaultLanguage()
-    {
-        $this->language = $this->getDefaultLanguage();
-        return $this;
-    }
-
-    /**
     * Get event;
     */
     public function getEvent()

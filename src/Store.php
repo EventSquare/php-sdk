@@ -21,6 +21,9 @@ class Store {
         $this->connection = $connection;
     }
 
+    public $event = null;
+    public $edition = null;
+
     /**
     * Set language;
     */
@@ -36,6 +39,24 @@ class Store {
     public function getLanguage()
     {
         return $this->language;
+    }
+
+
+    /**
+    * Get default language;
+    */
+    public function getDefaultLanguage()
+    {
+        return $this->event->languages[0];
+    }
+
+    /**
+    * Set default language;
+    */
+    public function setDefaultLanguage()
+    {
+        $this->language = $this->getDefaultLanguage();
+        return $this;
     }
 
     /**

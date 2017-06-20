@@ -21,8 +21,8 @@ class Connection {
         $this->apikey = $apikey;
 
         $this->meta = [
-            'agent' => $_SERVER['HTTP_USER_AGENT'],
-            'ip' => $_SERVER['REMOTE_ADDR'],
+            'agent' => !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null,
+            'ip' => !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
         ];
 
         if(!empty($_SERVER['HTTP_REFERER'])){
