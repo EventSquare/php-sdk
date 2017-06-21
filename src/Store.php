@@ -80,7 +80,7 @@ class Store {
             $link .= '/' . $segments['channel'];
         }
         if(!empty($segments['preview_token'])){
-            $link .= '/?token=' . $segments['preview_token'];
+            $link .= '?preview_token=' . $segments['preview_token'];
         }
 
         if(!$segments){
@@ -92,7 +92,7 @@ class Store {
                 $link .= '/' . $this->channel->uri;
             }
             if($this->preview_token) {
-                $link .= '/?token=' . $this->preview_token;
+                $link .= '?preview_token=' . $this->preview_token;
             }
 
         }
