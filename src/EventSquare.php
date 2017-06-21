@@ -11,7 +11,6 @@ class EventSquare
 {
 
     private $connection;
-
     private $timezone;
     private $language;
 
