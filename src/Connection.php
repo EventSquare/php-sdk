@@ -11,7 +11,7 @@ class Connection {
     private $apikey;
     private $uri;
     private $target;
-    private $meta = [];
+    public  $meta = [];
     private $headers = [];
     private $params = [];
     private $instance;
@@ -77,8 +77,10 @@ class Connection {
     private function cURL($type,$method,$headers,$params=[])
     {
 
-        if($type=='get')
+        if($type=='get'){
             $method = $method.'?'.$this->bindPostFields($params);
+        }
+        
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $method);
         curl_setopt($curl, CURLOPT_VERBOSE, 0);

@@ -105,7 +105,12 @@ class Store {
     */
     public function event($event)
     {
-        $this->event = $this->connection->send('store/' . $event,'event')->get(['language' => $this->language]);
+        $parameters = [
+            'language' => $this->language
+        ];
+        $parameters = array_merge($this->connection->meta,$parameters);
+
+        $this->event = $this->connection->send('store/' . $event,'event')->get($parameters);
         return $this->event;
     }
 
@@ -126,6 +131,8 @@ class Store {
             'language' => $this->language,
             'preview_token' => $preview_token,
         ];
+
+        $parameters = array_merge($this->connection->meta,$parameters);
 
         $this->preview_token = $preview_token;
         $this->edition = $this->connection->send('store/' . $uri,'edition')->get($parameters);
