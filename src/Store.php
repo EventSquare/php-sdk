@@ -23,6 +23,7 @@ class Store {
 
     public $event = null;
     public $edition = null;
+    public $channel = null;
 
     /**
     * Set language;
@@ -252,14 +253,29 @@ class Store {
     /**
     * Update cart type
     */
-    public function updateType($uid,$quantity)
+    public function updateType($uid,$show,$quantity)
     {
         $parameters = [
             'quantity' => $quantity
         ];
 
+        if($show){
+            $parameters['show'] = $show;
+        }
+
         $this->connection->send('cart/' . $this->getCartId() . '/types/' . $uid)->put($parameters);
         return;
+    }
+
+    /**
+    * Get show
+    */
+    public function getShow($event,$edition,$channel,$show_id)
+    {
+        $show = $this->connection->send('store/'.$event . '/' . $edition . '/' . $channel . '/' . $show_id,'show')->get([
+            'language' => $this->language
+        ]);
+        return $show;
     }
 
 
