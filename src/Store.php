@@ -273,6 +273,7 @@ class Store {
     public function getShow($event,$edition,$channel,$show_id)
     {
         $show = $this->connection->send('store/'.$event . '/' . $edition . '/' . $channel . '/' . $show_id,'show')->get([
+            'cart' => $this->getCartId(),
             'language' => $this->language
         ]);
         return $show;
