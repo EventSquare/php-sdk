@@ -23,6 +23,10 @@ class Pocket {
         return $this->connection->send('collect/' . $this->uid . '/tickets','pocket',$this);
     }
 
+    public function actions() {
+        return $this->connection->send('collect/' . $this->uid . '/actions');
+    }
+
     public function append($data) {
         $this->data = $data;
         return $this;
