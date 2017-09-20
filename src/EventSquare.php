@@ -6,6 +6,7 @@ use EventSquare\EventSquareException;
 use EventSquare\Connection;
 use EventSquare\Store;
 use EventSquare\Pocket;
+use EventSquare\Seatmap;
 
 class EventSquare
 {
@@ -77,6 +78,14 @@ class EventSquare
     public function pockets($uid)
     {
         return new Pocket($this->connection,$uid);
+    }
+
+    /**
+    * Seatmaps
+    */
+    public function seatmaps($uid)
+    {
+        return new Seatmap($this->connection,$uid);
     }
 
     /**
