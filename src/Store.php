@@ -253,7 +253,7 @@ class Store {
     /**
     * Update cart type
     */
-    public function updateType($uid,$show,$quantity)
+    public function updateType($uid,$show,$seatmap,$quantity,$places)
     {
         $parameters = [
             'quantity' => $quantity
@@ -262,8 +262,32 @@ class Store {
         if($show){
             $parameters['show'] = $show;
         }
+        if($seatmap){
+            $parameters['seatmap'] = $seatmap;
+        }
+        if($places){
+            $parameters['places'] = $places;
+        }
 
         $this->connection->send('cart/' . $this->getCartId() . '/types/' . $uid)->put($parameters);
+        return;
+    }
+
+    /**
+    * Remove cart type
+    */
+    public function removeType($uid,$show,$seatmap)
+    {
+        $parameters = [];
+
+        if($show){
+            $parameters['show'] = $show;
+        }
+        if($seatmap){
+            $parameters['seatmap'] = $seatmap;
+        }
+
+        $this->connection->send('cart/' . $this->getCartId() . '/types/' . $uid)->delete($parameters);
         return;
     }
 
@@ -277,6 +301,26 @@ class Store {
             'language' => $this->language
         ]);
         return $show;
+    }
+
+    /**
+    * Get seatmap
+    */
+    public function getSeatmap($event,$edition,$channel,$show_id,$seatmap_id)
+    {
+        $show = $this->connection->send('store/'.$event . '/' . $edition . '/' . $channel . '/' . $show_id . '/' . $seatmap_id,'seatmap')->get([
+            'cart' => $this->getCartId(),
+            'language' => $this->language
+        ]);
+        return $show;
+    }
+
+    public function getSeatmapDetails($seatmap_id)
+    {
+        $seatmap = $this->connection->send('seatmap/'.$seatmap_id,'seatmap')->get([
+            'language' => $this->language
+        ]);
+        return $seatmap;
     }
 
 
