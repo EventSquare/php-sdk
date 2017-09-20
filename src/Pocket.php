@@ -15,6 +15,10 @@ class Pocket {
         $this->uid = $uid;
     }
 
+    public function details() {
+        return $this->connection->send('collect/' . $this->uid,'pocket',$this);
+    }
+
     public function tickets() {
         return $this->connection->send('collect/' . $this->uid . '/tickets','pocket',$this);
     }
