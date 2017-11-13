@@ -115,7 +115,7 @@ class Connection {
             throw new \Exception('A problem occured when trying to connect to the API',$code);
         }
 
-        if($this->instance && $this->target && !empty($this->target)){
+        if($this->instance && $this->target && !empty($this->target) && !empty($body->{$this->target})){
             return $this->instance->append($body->{$this->target});
         }
 
