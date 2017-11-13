@@ -80,7 +80,7 @@ class Connection {
         if($type=='get'){
             $method = $method.'?'.$this->bindPostFields($params);
         }
-        
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $method);
         curl_setopt($curl, CURLOPT_VERBOSE, 0);
@@ -115,7 +115,7 @@ class Connection {
             throw new \Exception('A problem occured when trying to connect to the API',$code);
         }
 
-        if($this->instance){
+        if($this->instance && $this->target && !empty($this->target)){
             return $this->instance->append($body->{$this->target});
         }
 
