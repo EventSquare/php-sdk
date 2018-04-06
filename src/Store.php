@@ -14,6 +14,7 @@ class Store {
 
     private $queueid;
     private $cartid;
+    private $entry_url;
 
     private $expires_at;
 
@@ -129,6 +130,7 @@ class Store {
         $parameters = [
             'cart' => $this->getCartId(),
             'queue' => $this->getQueueId(),
+            'entry_url' => $this->getEntryUrl(),
             'language' => $this->language,
             'preview_token' => $preview_token,
         ];
@@ -198,6 +200,23 @@ class Store {
     public function setQueueId($queueid)
     {
         $this->queueid = $queueid;
+        return $this;
+    }
+
+    /**
+    * Get entry_url
+    */
+    public function getEntryUrl()
+    {
+        return $this->entry_url?: null;
+    }
+
+    /**
+    * Set entry_url
+    */
+    public function setEntryUrl($entry_url)
+    {
+        $this->entry_url = $entry_url;
         return $this;
     }
 
