@@ -105,14 +105,18 @@ class Store {
     /**
     * Set event;
     */
-    public function event($event)
+    public function event($event,$cache = null)
     {
-        $parameters = [
-            'language' => $this->language
-        ];
-        $parameters = array_merge($this->connection->meta,$parameters);
-
-        $this->event = $this->connection->send('store/' . $event,'event')->get($parameters);
+        if($cache){
+            $this->event = $cache;
+        } else {
+            $parameters = [
+                'language' => $this->language
+            ];
+            $parameters = array_merge($this->connection->meta,$parameters);
+            $this->event = $this->connection->send('store/' . $event,'event')->get($parameters);
+        }
+        
         return $this->event;
     }
 
