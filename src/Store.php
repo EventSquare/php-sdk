@@ -12,8 +12,8 @@ class Store {
 
     private $preview_token;
 
-    private $queueid;
     private $cartid;
+    private $access_token;
     private $entry_url;
 
     private $expires_at;
@@ -132,8 +132,8 @@ class Store {
         }
 
         $parameters = [
+            'access_token' => $this->getAccessToken(),
             'cart' => $this->getCartId(),
-            'queue' => $this->getQueueId(),
             'entry_url' => $this->getEntryUrl(),
             'language' => $this->language,
             'preview_token' => $preview_token,
@@ -144,7 +144,6 @@ class Store {
         $this->preview_token = $preview_token;
         $this->edition = $this->connection->send('store/' . $uri,'edition')->get($parameters);
 
-        $this->updateQueueId();
         $this->updateCartId();
         return $this;
     }
@@ -158,6 +157,23 @@ class Store {
             'language' => $this->language
         ]);
         return $this->cart;
+    }
+    
+    /**
+    * Set Access Token
+    */
+    public function setAccessToken($access_token)
+    {
+        $this->access_token = $access_token;
+        return $this;
+    }
+
+     /**
+    * Find access token in store and update instance property
+    */
+    public function getAccessToken()
+    {
+        return $this->access_token?: null;
     }
 
     /**
@@ -178,6 +194,15 @@ class Store {
     }
 
     /**
+    * Clear cartid
+    */
+    public function clearCartId()
+    {
+        $this->cartid = null;
+        return $this;
+    }
+
+    /**
     * Update cartid
     */
     public function updateCartId()
@@ -187,23 +212,6 @@ class Store {
             $this->cartid = $this->edition->cart->cartid;
             $this->getCart();
         }
-        return $this;
-    }
-
-    /**
-    * Get queueid
-    */
-    public function getQueueId()
-    {
-        return $this->queueid?: null;
-    }
-
-    /**
-    * Set queueid
-    */
-    public function setQueueId($queueid)
-    {
-        $this->queueid = $queueid;
         return $this;
     }
 
@@ -225,18 +233,6 @@ class Store {
     }
 
     /**
-    * Update queueid
-    */
-    public function updateQueueId()
-    {
-        if(!empty($this->edition->queue->queueid))
-        {
-            $this->queueid = $this->edition->queue->queueid;
-        }
-        return $this;
-    }
-
-    /**
     * Check if we the store is open for public
     */
     public function isClosed()
@@ -253,6 +249,13 @@ class Store {
         return false;
     }
 
+    /**
+    * Get queue
+    */
+    public function getQueue()
+    {
+        return $this->edition->queue;
+    }
 
     /**
     * Check if we have a cart
