@@ -135,12 +135,35 @@ class Connection {
 
     private function getIp()
     {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            return $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip_array = explode(",", $_SERVER['HTTP_X_FORWARDED_FOR']);
-            return trim($ip_array[count($ip_array)-1]);
+        if (!empty($_SERVER['HTTP_CLIENT_IP']))
+        {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
         }
-        return $_SERVER['REMOTE_ADDR'];
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+        {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED']))
+        {
+            $ip = $_SERVER['HTTP_X_FORWARDED'];
+        }
+        elseif (!empty($_SERVER['HTTP_FORWARDED_FOR']))
+        {
+            $ip = $_SERVER['HTTP_FORWARDED_FOR'];
+        }
+        elseif (!empty($_SERVER['HTTP_FORWARDED']))
+        {
+            $ip = $_SERVER['HTTP_FORWARDED'];
+        }
+        else if (!empty($_SERVER['REMOTE_ADDR']))
+        {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        else
+        {
+            $ip = null;
+        }
+
+        return $ip;
     }
 }
