@@ -22,7 +22,7 @@ class Connection {
 
         $this->meta = [
             'agent' => !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null,
-            'ip' => !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
+            'ip' => $this->getIp(),
         ];
 
         if(!empty($_SERVER['HTTP_REFERER'])){
@@ -131,5 +131,16 @@ class Connection {
     private function bindPostFields($params)
     {
         return http_build_query($params);
+    }
+
+    private function getIp()
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip_array = explode(",", $_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($ip_array[count($ip_array)-1]);
+        }
+        return $_SERVER['REMOTE_ADDR'];
     }
 }
