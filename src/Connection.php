@@ -85,8 +85,8 @@ class Connection {
         curl_setopt($curl, CURLOPT_URL, $method);
         curl_setopt($curl, CURLOPT_VERBOSE, 0);
         curl_setopt($curl, CURLOPT_HEADER, 1);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT ,20);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 20);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT ,0);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 600);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_BINARYTRANSFER, true);
