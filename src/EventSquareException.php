@@ -6,8 +6,7 @@ class EventSquareException extends \Exception {
 
     private $error;
 
-    public function __construct($code,$error,$message) {
-
+    public function __construct($code,$error,$message = null) {
         parent::__construct($message,$code);
         $this->code = $code;
         $this->error = $error;
