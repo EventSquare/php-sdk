@@ -237,7 +237,7 @@ class Store {
     */
     public function isClosed()
     {
-        return is_null($this->edition);
+        return !$this->event->editions;
     }
 
     /**
