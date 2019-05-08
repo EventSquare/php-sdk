@@ -11,6 +11,8 @@ class Store {
     private $data;
 
     private $preview_token;
+    private $needs_password;
+    private $password;
 
     private $cartid;
     private $access_token;
@@ -58,6 +60,15 @@ class Store {
     public function setDefaultLanguage()
     {
         $this->language = $this->getDefaultLanguage();
+        return $this;
+    }
+
+    /**
+    * Set needs password;
+    */
+    public function setNeedsPassword($needs_password)
+    {
+        $this->needs_password = $needs_password;
         return $this;
     }
 
@@ -141,8 +152,14 @@ class Store {
 
         $parameters = array_merge($this->connection->meta,$parameters);
 
+        //Append extra headers
+        $headers = [];
+        if($password = $this->getPassword()){
+            $headers['password'] = $password;
+        }
+
         $this->preview_token = $preview_token;
-        $this->edition = $this->connection->send('store/' . $uri,'edition')->get($parameters);
+        $this->edition = $this->connection->withHeaders($headers)->send('store/' . $uri,'edition')->get($parameters);
 
         $this->updateCartId();
         return $this;
@@ -216,6 +233,23 @@ class Store {
     }
 
     /**
+    * Set password
+    */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
+    * Get password
+    */
+    public function getPassword()
+    {
+        return $this->password?: null;
+    }
+
+    /**
     * Get entry_url
     */
     public function getEntryUrl()
@@ -237,7 +271,15 @@ class Store {
     */
     public function isClosed()
     {
-        return !$this->event->editions;
+        return !$this->event->editions || !$this->channel;
+    }
+
+    /**
+    * Check if the channel is locked
+    */
+    public function isLocked()
+    {
+        return $this->needs_password;
     }
 
     /**

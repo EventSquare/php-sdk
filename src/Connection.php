@@ -59,6 +59,14 @@ class Connection {
     }
 
     /**
+    * Append extra headers
+    */
+    public function withHeaders($headers = []) {
+        $this->headers = array_merge($this->headers,$headers);
+        return $this;
+    }
+
+    /**
     * Compile
     */
     private function compile($type)
