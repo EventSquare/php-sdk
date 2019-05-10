@@ -271,7 +271,8 @@ class Store {
     */
     public function isClosed()
     {
-        return !$this->event->editions || !$this->channel;
+        return !$this->event->editions;
+        //return !$this->event->editions || !$this->channel;
     }
 
     /**
