@@ -322,7 +322,7 @@ class Store {
     /**
     * Update cart type
     */
-    public function updateType($uid,$show,$seatmap,$quantity,$places)
+    public function updateType($uid,$show,$seatmap,$quantity,$places,$deal)
     {
         $parameters = [
             'quantity' => $quantity
@@ -336,6 +336,9 @@ class Store {
         }
         if($places){
             $parameters['places'] = $places;
+        }
+        if($deal){
+            $parameters['deal'] = $deal;
         }
 
         $this->connection->send('cart/' . $this->getCartId() . '/types/' . $uid)->put($parameters);

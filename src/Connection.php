@@ -6,7 +6,7 @@ use EventSquare\EventSquareException;
 
 class Connection {
 
-    public $endpoint = "http://api.eventsquare.co/1.0";
+    public $endpoint = "https://api.eventsquare.io/1.0";
 
     private $apikey;
     private $uri;
@@ -85,7 +85,7 @@ class Connection {
     private function cURL($type,$method,$headers,$params=[])
     {
 
-        if($type=='get'){
+        if($type == 'get'){
             $method = $method.'?'.$this->bindPostFields($params);
         }
 
