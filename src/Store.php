@@ -348,7 +348,7 @@ class Store {
     /**
     * Remove cart type
     */
-    public function removeType($uid,$show,$seatmap)
+    public function removeType($uid,$show,$seatmap,$voucher)
     {
         $parameters = [];
 
@@ -357,6 +357,9 @@ class Store {
         }
         if($seatmap){
             $parameters['seatmap'] = $seatmap;
+        }
+        if($voucher){
+            $parameters['voucher'] = $voucher;
         }
 
         $this->connection->send('cart/' . $this->getCartId() . '/types/' . $uid)->delete($parameters);
