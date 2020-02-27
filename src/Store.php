@@ -97,19 +97,16 @@ class Store {
         }
 
         if(!$segments){
-
             if($this->edition) {
                 $link .= '/' . $this->edition->uri;
             }
-            if($this->channel) {
-                $link .= '/' . $this->channel->uri;
+            if($this->edition->channel) {
+                $link .= '/' . $this->edition->channel->uri;
             }
             if($this->preview_token) {
                 $link .= '?preview_token=' . $this->preview_token;
             }
-
         }
-
         return ltrim($link, '/');
     }
 
